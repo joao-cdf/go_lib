@@ -95,17 +95,35 @@ def cp_calc(attack_base, attack_iv, defense_base, defense_iv, hp_base, hp_iv, po
         pow(Cp_multiplier[power_up_value], 2) / 10
     ))
     
-if __name__ == "__main__":
-    attack_base = int(input("Base Attack -> "))
-    defense_base = int(input("Base Defense -> "))
-    hp_base = int(input("Base Hp -> "))
-    attack_iv = int(input("Attack Iv -> "))
-    defense_iv = int(input("Defense Iv -> "))
-    hp_iv = int(input("Hp Iv -> "))
-    power_up_value = float(input("Level -> "))
+def Menu():
+
+    menu = {}
+    menu['1'] = "Calculate CP."
+    menu['2'] = "Exit."
     
-    value = cp_calc(attack_base, attack_iv, defense_base, defense_iv, hp_base, hp_iv, power_up_value)
-    print(value)
+    while True:
+        options=menu.keys()
+        for entry in options:
+            print(entry, menu[entry])
+        option = int(input("Choose an option: "))
+        if option == 1:
+            attack_base = int(input("Base Attack -> "))
+            defense_base = int(input("Base Defense -> "))
+            hp_base = int(input("Base Hp -> "))
+            attack_iv = int(input("Attack Iv -> "))
+            defense_iv = int(input("Defense Iv -> "))
+            hp_iv = int(input("Hp Iv -> "))
+            power_up_value = float(input("Level -> "))
+    
+            value = cp_calc(attack_base, attack_iv, defense_base, defense_iv, hp_base, hp_iv, power_up_value)
+            print(value)
+        elif option == 0:
+            break
+        else:
+            print("Invalid option!")
+    
+if __name__ == "__main__":
+    Menu()
     
     
 # Some Regex to find files in csv file
