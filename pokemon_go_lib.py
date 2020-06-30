@@ -87,19 +87,46 @@ Cp_multiplier = {
     45 : 0.81529999,   
 }
     
-def cp_calc(attack_base, attack_iv, defense_base, defense_iv, hp_base, hp_iv, power_up_value):
+class baseStat():
+    def __init__(self, attack, defense, stamina):
+        self.attack = attack
+        self.defense = defense
+        self.stamina = stamina
+        
+    def __repr__(self):
+        return super().__repr__()
+    
+    def setStats(self, attack, defense, stamina):
+        self.attack = attack
+        self.defense = defense
+        self.stamina = stamina
+
+def cp_calc(baseStat, attack_iv, defense_iv, hp_iv, power_up_value):
     return max(10, floor(
-        (attack_base + attack_iv) *
-        (pow((defense_base + defense_iv), 0.5)) *
-        (pow((hp_base + hp_iv), 0.5)) *
+        (baseStat.attack + attack_iv) *
+        (pow((baseStat.defense + defense_iv), 0.5)) *
+        (pow((baseStat.stamina + hp_iv), 0.5)) *
         pow(Cp_multiplier[power_up_value], 2) / 10
     ))
     
+def base_stat_calc(hp, attack, sp_attack, defense, sp_defense, speed):
+    speed_mult = 1 + ((speed - 75) / 500)
+    attack_go = ((1/4)*min(attack, sp_attack) + (7/4)*max(attack, sp_attack)) * speed_mult
+    defense_go = ((3/4)*min(defense, sp_defense) + (5/4)*max(defense, sp_defense)) * speed_mult
+    stamina_go = 50 + 1.75 * hp
+    
+    x = baseStat(attack_go, defense_go, stamina_go)
+    if cp_calc(x, 15, 15, 15, 40) > 4000:
+        x.setStats(attack_go * 0.91, defense_go * 0.91, stamina_go * 0.91)
+    
+    return x
+
 def Menu():
 
     menu = {}
     menu['1'] = "Calculate CP."
-    menu['2'] = "Exit."
+    menu['2'] = "Populate Base Stats"
+    menu['0'] = "Exit."
     
     while True:
         options=menu.keys()
@@ -114,9 +141,13 @@ def Menu():
             defense_iv = int(input("Defense Iv -> "))
             hp_iv = int(input("Hp Iv -> "))
             power_up_value = float(input("Level -> "))
-    
-            value = cp_calc(attack_base, attack_iv, defense_base, defense_iv, hp_base, hp_iv, power_up_value)
+
+            base_stat = baseStat(attack_base, defense_base, hp_base)
+            
+            value = cp_calc(base_stat, defense_iv, hp_base, hp_iv, power_up_value)
             print(value)
+        elif option == 2:
+            pass
         elif option == 0:
             break
         else:
